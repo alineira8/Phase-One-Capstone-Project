@@ -7,7 +7,7 @@ public class Course {
 
     private String courseID;
     private String courseName;
-     private int credits;
+    private int credits;
 
     private List<Student> students = new ArrayList<>();
 
@@ -16,29 +16,36 @@ public class Course {
         this.courseName = courseName;
         this.credits = credits;
     }
-   
-    public String getCourseID() {
-        return courseID;
-    }
 
-    public String getCourseName() {
-        return courseName;
-    }
+    // Getters
+    public String getCourseID() { return courseID; }
+    public String getCourseName() { return courseName; }
+    public int getCredits() { return credits; }
+    public List<Student> getStudents() { return students; }
 
-    public int getCredits() {
-        return credits;
-    }
-
-    public List<Student> getStudents() {
-        return students;
-    }
-
+    // Enroll student with duplicate check
     public void enrollStudent(Student student) {
-        students.add(student);
-    }
-      @Override
-    public String toString() {
-        return "CourseID: " +courseID + "Name of the Course:  " + courseName + "credits " + credits;
+        if (!students.contains(student)) {
+            students.add(student);
+        } else {
+            System.out.println(student.getName() + " is already enrolled in " + courseName);
+        }
     }
 
+    // Display roster
+    public void displayRoster() {
+        if (students.isEmpty()) {
+            System.out.println("No students enrolled in " + courseName);
+            return;
+        }
+        System.out.println("Roster for " + courseName + ":");
+        for (Student s : students) {
+            System.out.println("- " + s.getName() + " | ID: " + s.getId());
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "CourseID: " + courseID + " | Name: " + courseName + " | Credits: " + credits;
+    }
 }
