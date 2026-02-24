@@ -30,7 +30,7 @@ public abstract String getRole();
 
 @Override
     public String toString() {
-        return getRole() + ": " + name + "Email: " + email ;
+        return getRole() + "Name: " + name + "Email: " + email ;
 
     }
 }
