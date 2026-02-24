@@ -1,66 +1,83 @@
 package Model;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class Student extends Person {
+public abstract class Student extends Person {
 
     private String studentID;
-    private String department;
     private double gpa;
+    private String department;
 
-    private Map<Course, Double> courses = new HashMap<>();
+    // Many-to-many relationship
+    private Map<Course, Double> enrolledCourses = new HashMap<>();
 
-    public Student(String name, String email, String studentID, String department) {
+    public Student(String name, String email,
+                   String studentID, String department) {
         super(name, email);
         this.studentID = studentID;
         this.department = department;
         this.gpa = 0.0;
     }
 
-    public double calculateTuition() {
-        return 0.0;
+    // Enroll course + assign grade
+    public void enrollCourse(Course course, double grade) {
+        enrolledCourses.put(course, grade);
+        course.getStudents().add(this);
     }
 
-    public void updateGpa(double newGpa) {
-        if (newGpa >= 0 && newGpa <= 4.0) {
-            gpa = newGpa;
+    // Calculate GPA automatically based on grades
+    public void calculateGpa() {
+        if (enrolledCourses.isEmpty()) {
+            gpa = 0.0;
+            return;
+        }
+
+        double total = 0.0;
+
+        for (double grade : enrolledCourses.values()) {
+            total += grade;
+        }
+
+        gpa = total / enrolledCourses.size();
+    }
+
+    // Getters & Setters
+
+    public String getStudentID() {
+        return studentID;
+    }
+
+    public double getGpa() {
+        return gpa;
+    }
+
+    public void setGpa(double gpa) {
+        if (gpa >= 0 && gpa <= 4.0) {
+            this.gpa = gpa;
         }
     }
 
-    public void enrollInCourse(Course course) {
-        courses.put(course, 0.0);
-        course.enrollStudent(this);
+    public String getDepartment() {
+        return department;
     }
 
-    public void assignGrade(Course course, double grade) {
-        if (courses.containsKey(course)) {
-            courses.put(course, grade);
-        }
-    }
-
-    public Map<Course, Double> getCourses() {
-        return courses;
+    public Map<Course, Double> getEnrolledCourses() {
+        return enrolledCourses;
     }
 
     @Override
-    
     public String getRole() {
         return "Student";
     }
 
-
-    public void displayStudentInfo() {
-        System.out.println("Name: " + getName() + ", ID: " + studentID + ", Department: " + department);
+    @Override
+    public String toString() {
+        return getRole() + " | ID: " + studentID +
+                " | Name: " + getName() +
+                " | GPA: " + gpa;
     }
 
-    public void displayCourses() {
-        System.out.println("Courses and Grades:");
-        for (Map.Entry<Course, Double> entry : courses.entrySet()) {
-            System.out.println(entry.getKey().getCourseName() + " : " + entry.getValue());
-        }
-    }
-
-    public String getId() {
-    return studentID; 
-}
+    // Required for Lab 1 Exercise 1.2
+    public abstract double calculateTuition();
 }
